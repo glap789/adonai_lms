@@ -18,45 +18,54 @@ class UserSeeder extends Seeder
         DB::beginTransaction();
 
         try {
-            
-            $admin = User::create([
-                'name' => 'Administrador',
-                'email' => 'admin@adonai.com',
-                'password' => Hash::make('admin123'),
-                'email_verified_at' => now(),
-            ]);
+            // ADMINISTRADOR
+            $admin = User::firstOrCreate(
+                ['email' => 'admin@adonai.com'],
+                [
+                    'name'              => 'Administrador',
+                    'password'          => Hash::make('admin123'),
+                    'email_verified_at' => now(),
+                ]
+            );
 
-            $rolAdmin = Role::where('name', 'admin')->first();
+            $rolAdmin = Role::where('name', 'admin')->first()
+                ?? Role::where('name', 'Administrador')->first();
+
             if ($rolAdmin) {
-                $admin->roles()->attach($rolAdmin->id);
-                $this->command->info('Usuario administrador creado con rol admin');
+                $admin->roles()->syncWithoutDetaching([$rolAdmin->id]);
+                $this->command->info('✅ Usuario administrador creado/asignado con rol admin');
             }
 
-            $docente = User::create([
-                'name' => 'Docente Ejemplo',
-                'email' => 'docente@adonai.com',
-                'password' => Hash::make('docente123'),
-                'email_verified_at' => now(),
-            ]);
+            // DOCENTE
+            $docente = User::firstOrCreate(
+                ['email' => 'docente@adonai.com'],
+                [
+                    'name'              => 'Docente Ejemplo',
+                    'password'          => Hash::make('docente123'),
+                    'email_verified_at' => now(),
+                ]
+            );
 
             $rolDocente = Role::where('name', 'docente')->first();
             if ($rolDocente) {
-                $docente->roles()->attach($rolDocente->id);
-                $this->command->info('Usuario docente creado con rol docente');
+                $docente->roles()->syncWithoutDetaching([$rolDocente->id]);
+                $this->command->info('✅ Usuario docente creado con rol docente');
             }
 
-            $estudiante = User::create([
-                'name' => 'Estudiante Ejemplo',
-                'email' => 'estudiante@adonai.com',
-                'password' => Hash::make('estudiante123'),
-                'email_verified_at' => now(),
-            ]);
+            // TUTOR
+            $tutor = User::firstOrCreate(
+                ['email' => 'tutor@adonai.com'],
+                [
+                    'name'              => 'Tutor Ejemplo',
+                    'password'          => Hash::make('tutor123'),
+                    'email_verified_at' => now(),
+                ]
+            );
 
-            // Asignar rol de estudiante
-            $rolEstudiante = Role::where('name', 'estudiante')->first();
-            if ($rolEstudiante) {
-                $estudiante->roles()->attach($rolEstudiante->id);
-                $this->command->info('Usuario estudiante creado con rol estudiante');
+            $rolTutor = Role::where('name', 'tutor')->first();
+            if ($rolTutor) {
+                $tutor->roles()->syncWithoutDetaching([$rolTutor->id]);
+                $this->command->info('✅ Usuario tutor creado con rol tutor');
             }
 
             DB::commit();
@@ -65,7 +74,6 @@ class UserSeeder extends Seeder
             $this->command->info('========================================');
             $this->command->info('      USUARIOS CREADOS EXITOSAMENTE     ');
             $this->command->info('========================================');
-            $this->command->info('');
             $this->command->info('Administrador:');
             $this->command->info('   Email: admin@adonai.com');
             $this->command->info('   Password: admin123');
@@ -74,9 +82,9 @@ class UserSeeder extends Seeder
             $this->command->info('   Email: docente@adonai.com');
             $this->command->info('   Password: docente123');
             $this->command->info('');
-            $this->command->info('Estudiante:');
-            $this->command->info('   Email: estudiante@adonai.com');
-            $this->command->info('   Password: estudiante123');
+            $this->command->info('Tutor:');
+            $this->command->info('   Email: tutor@adonai.com');
+            $this->command->info('   Password: tutor123');
             $this->command->info('');
             $this->command->info('IMPORTANTE: Cambiar estas contraseñas en producción');
             $this->command->info('========================================');

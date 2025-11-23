@@ -17,485 +17,190 @@ class RolesPermisosSeeder extends Seeder
         DB::beginTransaction();
 
         try {
-            // =============================================
-            // CREAR ROLES
-            // =============================================
-            
-            $admin = Role::create([
-                'name' => 'admin',
-                'display_name' => 'Administrador',
-                'description' => 'Acceso total al sistema'
-            ]);
+            // ======================================
+            // CREAR ROLES (con firstOrCreate)
+            // ======================================
 
-            $docente = Role::create([
-                'name' => 'docente',
-                'display_name' => 'Docente',
-                'description' => 'Acceso para docentes'
-            ]);
+            $adminPrincipal = Role::firstOrCreate(
+                ['name' => 'Administrador'],
+                [
+                    'display_name' => 'Administrador',
+                    'description'  => 'Administrador del sistema'
+                ]
+            );
 
-            $tutor = Role::create([
-                'name' => 'tutor',
-                'display_name' => 'Tutor',
-                'description' => 'Acceso para tutores'
-            ]);
+            $adminAlias = Role::firstOrCreate(
+                ['name' => 'admin'],
+                [
+                    'display_name' => 'Admin',
+                    'description'  => 'Administrador del sistema (alias)'
+                ]
+            );
 
-            $estudiante = Role::create([
-                'name' => 'estudiante',
-                'display_name' => 'Estudiante',
-                'description' => 'Acceso para estudiantes'
-            ]);
+            $docente = Role::firstOrCreate(
+                ['name' => 'docente'],
+                [
+                    'display_name' => 'Docente',
+                    'description'  => 'Docente del colegio'
+                ]
+            );
 
-            // =============================================
+            $tutor = Role::firstOrCreate(
+                ['name' => 'tutor'],
+                [
+                    'display_name' => 'Tutor',
+                    'description'  => 'Tutor de estudiante'
+                ]
+            );
+
+            $estudiante = Role::firstOrCreate(
+                ['name' => 'estudiante'],
+                [
+                    'display_name' => 'Estudiante',
+                    'description'  => 'Estudiante del colegio'
+                ]
+            );
+
+            // ======================================
             // CREAR PERMISOS POR MÓDULOS
-            // =============================================
+            // (misma lógica que ya tenías, pero con firstOrCreate)
+            // ======================================
 
             $permisos = [];
 
-            // === MÓDULO: DASHBOARD ===
-            $permisos[] = Permission::create([
-                'name' => 'dashboard.view',
-                'display_name' => 'Ver Dashboard',
-                'description' => 'Acceso al panel principal',
-                'module' => 'dashboard'
-            ]);
+            // Helper para no repetir código
+            $crearPermiso = function (string $name, string $display, string $description, string $module) use (&$permisos) {
+                $permisos[] = Permission::firstOrCreate(
+                    ['name' => $name],
+                    [
+                        'display_name' => $display,
+                        'description'  => $description,
+                        'module'       => $module,
+                    ]
+                );
+            };
 
-            // === MÓDULO: CONFIGURACIÓN ===
-            $permisos[] = Permission::create([
-                'name' => 'configuracion.view',
-                'display_name' => 'Ver Configuración',
-                'description' => 'Acceso a configuración del sistema',
-                'module' => 'configuracion'
-            ]);
+            // === DASHBOARD ===
+            $crearPermiso('dashboard.view', 'Ver Dashboard', 'Acceso al panel principal', 'dashboard');
 
-            // === MÓDULO: GESTIONES ===
-            $permisos[] = Permission::create([
-                'name' => 'gestiones.view',
-                'display_name' => 'Ver Gestiones',
-                'description' => 'Ver listado de gestiones',
-                'module' => 'academico'
-            ]);
-            $permisos[] = Permission::create([
-                'name' => 'gestiones.create',
-                'display_name' => 'Crear Gestiones',
-                'description' => 'Crear nuevas gestiones',
-                'module' => 'academico'
-            ]);
-            $permisos[] = Permission::create([
-                'name' => 'gestiones.edit',
-                'display_name' => 'Editar Gestiones',
-                'description' => 'Editar gestiones existentes',
-                'module' => 'academico'
-            ]);
-            $permisos[] = Permission::create([
-                'name' => 'gestiones.delete',
-                'display_name' => 'Eliminar Gestiones',
-                'description' => 'Eliminar gestiones',
-                'module' => 'academico'
-            ]);
+            // === CONFIGURACIÓN ===
+            $crearPermiso('configuracion.view', 'Ver Configuración', 'Acceso a configuración del sistema', 'configuracion');
 
-            // === MÓDULO: PERÍODOS ===
-            $permisos[] = Permission::create([
-                'name' => 'periodos.view',
-                'display_name' => 'Ver Períodos',
-                'description' => 'Ver listado de períodos',
-                'module' => 'academico'
-            ]);
-            $permisos[] = Permission::create([
-                'name' => 'periodos.create',
-                'display_name' => 'Crear Períodos',
-                'description' => 'Crear nuevos períodos',
-                'module' => 'academico'
-            ]);
-            $permisos[] = Permission::create([
-                'name' => 'periodos.edit',
-                'display_name' => 'Editar Períodos',
-                'description' => 'Editar períodos existentes',
-                'module' => 'academico'
-            ]);
-            $permisos[] = Permission::create([
-                'name' => 'periodos.delete',
-                'display_name' => 'Eliminar Períodos',
-                'description' => 'Eliminar períodos',
-                'module' => 'academico'
-            ]);
+            // === GESTIONES ===
+            $crearPermiso('gestiones.view', 'Ver Gestiones', 'Ver listado de gestiones', 'academico');
+            $crearPermiso('gestiones.create', 'Crear Gestiones', 'Crear nuevas gestiones', 'academico');
+            $crearPermiso('gestiones.edit', 'Editar Gestiones', 'Editar gestiones existentes', 'academico');
+            $crearPermiso('gestiones.delete', 'Eliminar Gestiones', 'Eliminar gestiones', 'academico');
 
-            // === MÓDULO: NIVELES ===
-            $permisos[] = Permission::create([
-                'name' => 'niveles.view',
-                'display_name' => 'Ver Niveles',
-                'description' => 'Ver listado de niveles',
-                'module' => 'academico'
-            ]);
-            $permisos[] = Permission::create([
-                'name' => 'niveles.create',
-                'display_name' => 'Crear Niveles',
-                'description' => 'Crear nuevos niveles',
-                'module' => 'academico'
-            ]);
+            // === PERÍODOS ===
+            $crearPermiso('periodos.view', 'Ver Períodos', 'Ver listado de períodos', 'academico');
+            $crearPermiso('periodos.create', 'Crear Períodos', 'Crear nuevos períodos', 'academico');
+            $crearPermiso('periodos.edit', 'Editar Períodos', 'Editar períodos existentes', 'academico');
+            $crearPermiso('periodos.delete', 'Eliminar Períodos', 'Eliminar períodos', 'academico');
 
-            // === MÓDULO: TURNOS ===
-            $permisos[] = Permission::create([
-                'name' => 'turnos.view',
-                'display_name' => 'Ver Turnos',
-                'description' => 'Ver listado de turnos',
-                'module' => 'academico'
-            ]);
+            // === NIVELES ===
+            $crearPermiso('niveles.view', 'Ver Niveles', 'Ver listado de niveles', 'academico');
+            $crearPermiso('niveles.create', 'Crear Niveles', 'Crear nuevos niveles', 'academico');
 
-            // === MÓDULO: HORARIOS ===
-            $permisos[] = Permission::create([
-                'name' => 'horarios.view',
-                'display_name' => 'Ver Horarios',
-                'description' => 'Ver listado de horarios',
-                'module' => 'academico'
-            ]);
+            // === TURNOS ===
+            $crearPermiso('turnos.view', 'Ver Turnos', 'Ver listado de turnos', 'academico');
 
-            // === MÓDULO: DOCENTES ===
-            $permisos[] = Permission::create([
-                'name' => 'docentes.view',
-                'display_name' => 'Ver Docentes',
-                'description' => 'Ver listado de docentes',
-                'module' => 'personal'
-            ]);
-            $permisos[] = Permission::create([
-                'name' => 'docentes.create',
-                'display_name' => 'Crear Docentes',
-                'description' => 'Registrar nuevos docentes',
-                'module' => 'personal'
-            ]);
-            $permisos[] = Permission::create([
-                'name' => 'docentes.edit',
-                'display_name' => 'Editar Docentes',
-                'description' => 'Editar datos de docentes',
-                'module' => 'personal'
-            ]);
-            $permisos[] = Permission::create([
-                'name' => 'docentes.delete',
-                'display_name' => 'Eliminar Docentes',
-                'description' => 'Eliminar docentes',
-                'module' => 'personal'
-            ]);
+            // === HORARIOS ===
+            $crearPermiso('horarios.view', 'Ver Horarios', 'Ver listado de horarios', 'academico');
 
-            // === MÓDULO: TUTORES ===
-            $permisos[] = Permission::create([
-                'name' => 'tutores.view',
-                'display_name' => 'Ver Tutores',
-                'description' => 'Ver listado de tutores',
-                'module' => 'personal'
-            ]);
+            // === DOCENTES ===
+            $crearPermiso('docentes.view', 'Ver Docentes', 'Ver listado de docentes', 'personal');
+            $crearPermiso('docentes.create', 'Crear Docentes', 'Registrar nuevos docentes', 'personal');
+            $crearPermiso('docentes.edit', 'Editar Docentes', 'Editar datos de docentes', 'personal');
+            $crearPermiso('docentes.delete', 'Eliminar Docentes', 'Eliminar docentes', 'personal');
 
-            // === MÓDULO: ESTUDIANTES ===
-            $permisos[] = Permission::create([
-                'name' => 'estudiantes.view',
-                'display_name' => 'Ver Estudiantes',
-                'description' => 'Ver listado de estudiantes',
-                'module' => 'estudiantes'
-            ]);
-            $permisos[] = Permission::create([
-                'name' => 'estudiantes.create',
-                'display_name' => 'Crear Estudiantes',
-                'description' => 'Registrar nuevos estudiantes',
-                'module' => 'estudiantes'
-            ]);
-            $permisos[] = Permission::create([
-                'name' => 'estudiantes.edit',
-                'display_name' => 'Editar Estudiantes',
-                'description' => 'Editar datos de estudiantes',
-                'module' => 'estudiantes'
-            ]);
-            $permisos[] = Permission::create([
-                'name' => 'estudiantes.delete',
-                'display_name' => 'Eliminar Estudiantes',
-                'description' => 'Eliminar estudiantes',
-                'module' => 'estudiantes'
-            ]);
+            // === TUTORES ===
+            $crearPermiso('tutores.view', 'Ver Tutores', 'Ver listado de tutores', 'personal');
 
-            // === MÓDULO: CURSOS ===
-            $permisos[] = Permission::create([
-                'name' => 'cursos.view',
-                'display_name' => 'Ver Cursos',
-                'description' => 'Ver listado de cursos',
-                'module' => 'academico'
-            ]);
-            $permisos[] = Permission::create([
-                'name' => 'cursos.create',
-                'display_name' => 'Crear Cursos',
-                'description' => 'Crear nuevos cursos',
-                'module' => 'academico'
-            ]);
-            $permisos[] = Permission::create([
-                'name' => 'cursos.edit',
-                'display_name' => 'Editar Cursos',
-                'description' => 'Editar cursos existentes',
-                'module' => 'academico'
-            ]);
-            $permisos[] = Permission::create([
-                'name' => 'cursos.delete',
-                'display_name' => 'Eliminar Cursos',
-                'description' => 'Eliminar cursos',
-                'module' => 'academico'
-            ]);
+            // === ESTUDIANTES ===
+            $crearPermiso('estudiantes.view', 'Ver Estudiantes', 'Ver listado de estudiantes', 'estudiantes');
+            $crearPermiso('estudiantes.create', 'Crear Estudiantes', 'Registrar nuevos estudiantes', 'estudiantes');
+            $crearPermiso('estudiantes.edit', 'Editar Estudiantes', 'Editar datos de estudiantes', 'estudiantes');
+            $crearPermiso('estudiantes.delete', 'Eliminar Estudiantes', 'Eliminar estudiantes', 'estudiantes');
 
-            // === MÓDULO: GRADOS ===
-            $permisos[] = Permission::create([
-                'name' => 'grados.view',
-                'display_name' => 'Ver Grados',
-                'description' => 'Ver listado de grados',
-                'module' => 'academico'
-            ]);
-            $permisos[] = Permission::create([
-                'name' => 'grados.create',
-                'display_name' => 'Crear Grados',
-                'description' => 'Crear nuevos grados',
-                'module' => 'academico'
-            ]);
-            $permisos[] = Permission::create([
-                'name' => 'grados.edit',
-                'display_name' => 'Editar Grados',
-                'description' => 'Editar grados existentes',
-                'module' => 'academico'
-            ]);
-            $permisos[] = Permission::create([
-                'name' => 'grados.delete',
-                'display_name' => 'Eliminar Grados',
-                'description' => 'Eliminar grados',
-                'module' => 'academico'
-            ]);
+            // === CURSOS ===
+            $crearPermiso('cursos.view', 'Ver Cursos', 'Ver listado de cursos', 'academico');
+            $crearPermiso('cursos.create', 'Crear Cursos', 'Crear nuevos cursos', 'academico');
+            $crearPermiso('cursos.edit', 'Editar Cursos', 'Editar cursos existentes', 'academico');
+            $crearPermiso('cursos.delete', 'Eliminar Cursos', 'Eliminar cursos', 'academico');
 
-            // === MÓDULO: ASIGNACIÓN DOCENTES ===
-            $permisos[] = Permission::create([
-                'name' => 'asignacion-docentes.view',
-                'display_name' => 'Ver Asignación Docentes',
-                'description' => 'Ver asignaciones de docentes a cursos',
-                'module' => 'academico'
-            ]);
-            $permisos[] = Permission::create([
-                'name' => 'asignacion-docentes.create',
-                'display_name' => 'Crear Asignación Docentes',
-                'description' => 'Asignar docentes a cursos',
-                'module' => 'academico'
-            ]);
-            $permisos[] = Permission::create([
-                'name' => 'asignacion-docentes.delete',
-                'display_name' => 'Eliminar Asignación Docentes',
-                'description' => 'Eliminar asignaciones de docentes',
-                'module' => 'academico'
-            ]);
+            // === GRADOS ===
+            $crearPermiso('grados.view', 'Ver Grados', 'Ver listado de grados', 'academico');
+            $crearPermiso('grados.create', 'Crear Grados', 'Crear nuevos grados', 'academico');
+            $crearPermiso('grados.edit', 'Editar Grados', 'Editar grados existentes', 'academico');
+            $crearPermiso('grados.delete', 'Eliminar Grados', 'Eliminar grados', 'academico');
 
-            // === MÓDULO: MATRÍCULAS ===
-            $permisos[] = Permission::create([
-                'name' => 'matriculas.view',
-                'display_name' => 'Ver Matrículas',
-                'description' => 'Ver listado de matrículas',
-                'module' => 'estudiantes'
-            ]);
-            $permisos[] = Permission::create([
-                'name' => 'matriculas.create',
-                'display_name' => 'Crear Matrículas',
-                'description' => 'Matricular estudiantes',
-                'module' => 'estudiantes'
-            ]);
-            $permisos[] = Permission::create([
-                'name' => 'matriculas.edit',
-                'display_name' => 'Editar Matrículas',
-                'description' => 'Editar matrículas existentes',
-                'module' => 'estudiantes'
-            ]);
-            $permisos[] = Permission::create([
-                'name' => 'matriculas.delete',
-                'display_name' => 'Eliminar Matrículas',
-                'description' => 'Eliminar matrículas',
-                'module' => 'estudiantes'
-            ]);
+            // === ASIGNACIÓN DOCENTES ===
+            $crearPermiso('asignacion-docentes.view', 'Ver Asignación Docentes', 'Ver asignaciones de docentes a cursos', 'academico');
+            $crearPermiso('asignacion-docentes.create', 'Crear Asignación Docentes', 'Asignar docentes a cursos', 'academico');
+            $crearPermiso('asignacion-docentes.delete', 'Eliminar Asignación Docentes', 'Eliminar asignaciones de docentes', 'academico');
 
-            // === MÓDULO: TUTOR-ESTUDIANTE ===
-            $permisos[] = Permission::create([
-                'name' => 'tutor-estudiante.view',
-                'display_name' => 'Ver Tutor-Estudiante',
-                'description' => 'Ver relaciones tutor-estudiante',
-                'module' => 'estudiantes'
-            ]);
-            $permisos[] = Permission::create([
-                'name' => 'tutor-estudiante.create',
-                'display_name' => 'Asignar Tutor-Estudiante',
-                'description' => 'Asignar tutores a estudiantes',
-                'module' => 'estudiantes'
-            ]);
+            // === MATRÍCULAS ===
+            $crearPermiso('matriculas.view', 'Ver Matrículas', 'Ver listado de matrículas', 'estudiantes');
+            $crearPermiso('matriculas.create', 'Crear Matrículas', 'Matricular estudiantes', 'estudiantes');
+            $crearPermiso('matriculas.edit', 'Editar Matrículas', 'Editar matrículas existentes', 'estudiantes');
+            $crearPermiso('matriculas.delete', 'Eliminar Matrículas', 'Eliminar matrículas', 'estudiantes');
 
-            // === MÓDULO: ASISTENCIAS ===
-            $permisos[] = Permission::create([
-                'name' => 'asistencias.view',
-                'display_name' => 'Ver Asistencias',
-                'description' => 'Ver registro de asistencias',
-                'module' => 'docentes'
-            ]);
-            $permisos[] = Permission::create([
-                'name' => 'asistencias.create',
-                'display_name' => 'Registrar Asistencias',
-                'description' => 'Registrar asistencias de estudiantes',
-                'module' => 'docentes'
-            ]);
-            $permisos[] = Permission::create([
-                'name' => 'asistencias.edit',
-                'display_name' => 'Editar Asistencias',
-                'description' => 'Editar registros de asistencias',
-                'module' => 'docentes'
-            ]);
+            // === TUTOR-ESTUDIANTE ===
+            $crearPermiso('tutor-estudiante.view', 'Ver Tutor-Estudiante', 'Ver relaciones tutor-estudiante', 'estudiantes');
+            $crearPermiso('tutor-estudiante.create', 'Asignar Tutor-Estudiante', 'Asignar tutores a estudiantes', 'estudiantes');
 
-            // === MÓDULO: NOTAS ===
-            $permisos[] = Permission::create([
-                'name' => 'notas.view',
-                'display_name' => 'Ver Notas',
-                'description' => 'Ver calificaciones de estudiantes',
-                'module' => 'docentes'
-            ]);
-            $permisos[] = Permission::create([
-                'name' => 'notas.create',
-                'display_name' => 'Registrar Notas',
-                'description' => 'Registrar calificaciones',
-                'module' => 'docentes'
-            ]);
-            $permisos[] = Permission::create([
-                'name' => 'notas.edit',
-                'display_name' => 'Editar Notas',
-                'description' => 'Editar calificaciones',
-                'module' => 'docentes'
-            ]);
+            // === ASISTENCIAS ===
+            $crearPermiso('asistencias.view', 'Ver Asistencias', 'Ver registro de asistencias', 'docentes');
+            $crearPermiso('asistencias.create', 'Registrar Asistencias', 'Registrar asistencias de estudiantes', 'docentes');
+            $crearPermiso('asistencias.edit', 'Editar Asistencias', 'Editar registros de asistencias', 'docentes');
 
-            // === MÓDULO: COMPORTAMIENTOS ===
-            $permisos[] = Permission::create([
-                'name' => 'comportamientos.view',
-                'display_name' => 'Ver Comportamientos',
-                'description' => 'Ver evaluaciones de comportamiento',
-                'module' => 'docentes'
-            ]);
-            $permisos[] = Permission::create([
-                'name' => 'comportamientos.create',
-                'display_name' => 'Registrar Comportamientos',
-                'description' => 'Registrar evaluaciones de comportamiento',
-                'module' => 'docentes'
-            ]);
-            $permisos[] = Permission::create([
-                'name' => 'comportamientos.edit',
-                'display_name' => 'Editar Comportamientos',
-                'description' => 'Editar evaluaciones de comportamiento',
-                'module' => 'docentes'
-            ]);
+            // === NOTAS ===
+            $crearPermiso('notas.view', 'Ver Notas', 'Ver calificaciones de estudiantes', 'docentes');
+            $crearPermiso('notas.create', 'Registrar Notas', 'Registrar calificaciones', 'docentes');
+            $crearPermiso('notas.edit', 'Editar Notas', 'Editar calificaciones', 'docentes');
 
-            // === MÓDULO: REPORTES ===
-            $permisos[] = Permission::create([
-                'name' => 'reportes.view',
-                'display_name' => 'Ver Reportes',
-                'description' => 'Acceso a módulo de reportes',
-                'module' => 'reportes'
-            ]);
-            $permisos[] = Permission::create([
-                'name' => 'reportes.generate',
-                'display_name' => 'Generar Reportes',
-                'description' => 'Generar reportes del sistema',
-                'module' => 'reportes'
-            ]);
+            // === COMPORTAMIENTOS ===
+            $crearPermiso('comportamientos.view', 'Ver Comportamientos', 'Ver evaluaciones de comportamiento', 'docentes');
+            $crearPermiso('comportamientos.create', 'Registrar Comportamientos', 'Registrar evaluaciones de comportamiento', 'docentes');
+            $crearPermiso('comportamientos.edit', 'Editar Comportamientos', 'Editar evaluaciones de comportamiento', 'docentes');
 
-            // === MÓDULO: ADMINISTRADORES ===
-            $permisos[] = Permission::create([
-                'name' => 'administradores.view',
-                'display_name' => 'Ver Administradores',
-                'description' => 'Ver listado de administradores',
-                'module' => 'administracion'
-            ]);
-            $permisos[] = Permission::create([
-                'name' => 'administradores.create',
-                'display_name' => 'Crear Administradores',
-                'description' => 'Registrar nuevos administradores',
-                'module' => 'administracion'
-            ]);
+            // === REPORTES ===
+            $crearPermiso('reportes.view', 'Ver Reportes', 'Acceso a módulo de reportes', 'reportes');
+            $crearPermiso('reportes.generate', 'Generar Reportes', 'Generar reportes del sistema', 'reportes');
 
-            // === MÓDULO: PERMISOS ===
-            $permisos[] = Permission::create([
-                'name' => 'permisos.view',
-                'display_name' => 'Ver Permisos',
-                'description' => 'Ver listado de permisos',
-                'module' => 'administracion'
-            ]);
-            $permisos[] = Permission::create([
-                'name' => 'permisos.create',
-                'display_name' => 'Crear Permisos',
-                'description' => 'Crear nuevos permisos',
-                'module' => 'administracion'
-            ]);
-            $permisos[] = Permission::create([
-                'name' => 'permisos.edit',
-                'display_name' => 'Editar Permisos',
-                'description' => 'Editar permisos existentes',
-                'module' => 'administracion'
-            ]);
-            $permisos[] = Permission::create([
-                'name' => 'permisos.delete',
-                'display_name' => 'Eliminar Permisos',
-                'description' => 'Eliminar permisos',
-                'module' => 'administracion'
-            ]);
+            // === ADMINISTRADORES ===
+            $crearPermiso('administradores.view', 'Ver Administradores', 'Ver listado de administradores', 'administracion');
+            $crearPermiso('administradores.create', 'Crear Administradores', 'Registrar nuevos administradores', 'administracion');
 
-            // === MÓDULO: ROLES ===
-            $permisos[] = Permission::create([
-                'name' => 'roles.view',
-                'display_name' => 'Ver Roles',
-                'description' => 'Ver listado de roles',
-                'module' => 'administracion'
-            ]);
-            $permisos[] = Permission::create([
-                'name' => 'roles.create',
-                'display_name' => 'Crear Roles',
-                'description' => 'Crear nuevos roles',
-                'module' => 'administracion'
-            ]);
-            $permisos[] = Permission::create([
-                'name' => 'roles.edit',
-                'display_name' => 'Editar Roles',
-                'description' => 'Editar roles existentes',
-                'module' => 'administracion'
-            ]);
-            $permisos[] = Permission::create([
-                'name' => 'roles.delete',
-                'display_name' => 'Eliminar Roles',
-                'description' => 'Eliminar roles',
-                'module' => 'administracion'
-            ]);
+            // === PERMISOS ===
+            $crearPermiso('permisos.view', 'Ver Permisos', 'Ver listado de permisos', 'administracion');
+            $crearPermiso('permisos.create', 'Crear Permisos', 'Crear nuevos permisos', 'administracion');
+            $crearPermiso('permisos.edit', 'Editar Permisos', 'Editar permisos existentes', 'administracion');
+            $crearPermiso('permisos.delete', 'Eliminar Permisos', 'Eliminar permisos', 'administracion');
 
-            // === MÓDULO: USUARIOS ===
-            $permisos[] = Permission::create([
-                'name' => 'usuarios.view',
-                'display_name' => 'Ver Usuarios',
-                'description' => 'Ver listado de usuarios',
-                'module' => 'administracion'
-            ]);
-            $permisos[] = Permission::create([
-                'name' => 'usuarios.create',
-                'display_name' => 'Crear Usuarios',
-                'description' => 'Crear nuevos usuarios',
-                'module' => 'administracion'
-            ]);
-            $permisos[] = Permission::create([
-                'name' => 'usuarios.edit',
-                'display_name' => 'Editar Usuarios',
-                'description' => 'Editar usuarios existentes',
-                'module' => 'administracion'
-            ]);
-            $permisos[] = Permission::create([
-                'name' => 'usuarios.delete',
-                'display_name' => 'Eliminar Usuarios',
-                'description' => 'Eliminar usuarios',
-                'module' => 'administracion'
-            ]);
+            // === ROLES ===
+            $crearPermiso('roles.view', 'Ver Roles', 'Ver listado de roles', 'administracion');
+            $crearPermiso('roles.create', 'Crear Roles', 'Crear nuevos roles', 'administracion');
+            $crearPermiso('roles.edit', 'Editar Roles', 'Editar roles existentes', 'administracion');
+            $crearPermiso('roles.delete', 'Eliminar Roles', 'Eliminar roles', 'administracion');
 
-            // ================================================
+            // === USUARIOS ===
+            $crearPermiso('usuarios.view', 'Ver Usuarios', 'Ver listado de usuarios', 'administracion');
+            $crearPermiso('usuarios.create', 'Crear Usuarios', 'Crear nuevos usuarios', 'administracion');
+            $crearPermiso('usuarios.edit', 'Editar Usuarios', 'Editar usuarios existentes', 'administracion');
+            $crearPermiso('usuarios.delete', 'Eliminar Usuarios', 'Eliminar usuarios', 'administracion');
+
+            // ======================================
             // ASIGNAR PERMISOS A ROLES
-            // ================================================
+            // ======================================
 
-            // ADMINISTRADOR: TODOS los permisos
+            // ADMINISTRADORES: TODOS
             $todosPermisos = Permission::all()->pluck('id');
-            $admin->permissions()->sync($todosPermisos);
+            $adminPrincipal->permissions()->sync($todosPermisos);
+            $adminAlias->permissions()->sync($todosPermisos);
 
-            // DOCENTE: permisos limitados
+            // DOCENTE
             $permisosDocente = Permission::whereIn('name', [
                 'dashboard.view',
                 'asistencias.view',
@@ -512,7 +217,7 @@ class RolesPermisosSeeder extends Seeder
             ])->pluck('id');
             $docente->permissions()->sync($permisosDocente);
 
-            // TUTOR: permisos muy limitados
+            // TUTOR
             $permisosTutor = Permission::whereIn('name', [
                 'dashboard.view',
                 'tutor-estudiante.view',
@@ -523,7 +228,7 @@ class RolesPermisosSeeder extends Seeder
             ])->pluck('id');
             $tutor->permissions()->sync($permisosTutor);
 
-            // ESTUDIANTE: solo lectura básica
+            // ESTUDIANTE
             $permisosEstudiante = Permission::whereIn('name', [
                 'dashboard.view',
                 'notas.view',
@@ -533,10 +238,8 @@ class RolesPermisosSeeder extends Seeder
 
             DB::commit();
 
-            $this->command->info('✅ Roles y permisos creados exitosamente!');
-            $this->command->info("📊 Total de permisos creados: " . count($permisos));
-            $this->command->info("👥 Roles creados: Administrador, Docente, Tutor, Estudiante");
-
+            $this->command->info('✅ Roles y permisos creados/actualizados correctamente.');
+            $this->command->info('📊 Total de permisos: ' . count($permisos));
         } catch (\Exception $e) {
             DB::rollBack();
             $this->command->error('❌ Error al crear roles y permisos: ' . $e->getMessage());
