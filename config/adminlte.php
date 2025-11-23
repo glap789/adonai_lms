@@ -540,9 +540,6 @@ return [
         JeroenNoten\LaravelAdminLte\Menu\Filters\ClassesFilter::class,
         JeroenNoten\LaravelAdminLte\Menu\Filters\LangFilter::class,
         JeroenNoten\LaravelAdminLte\Menu\Filters\DataFilter::class,
-        
-        // ✅ FILTRO PERSONALIZADO PARA ROLES
-        App\Http\MenuFilter::class,
     ],
 
     /*
