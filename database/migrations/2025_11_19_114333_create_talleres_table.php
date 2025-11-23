@@ -15,12 +15,17 @@ return new class extends Migration
             $table->id();
             $table->string('nombre');
             $table->text('descripcion')->nullable();
-            $table->string('instructor')->nullable();
-            $table->string('duracion')->nullable(); // Este campo será reemplazado por duracion_inicio/fin
-            $table->string('horario')->nullable(); // Este campo será reemplazado por horario_inicio/fin
-            $table->integer('cupo_maximo')->nullable();
-            $table->enum('estado', ['Activo', 'Inactivo'])->default('Activo');
+            $table->string('instructor');
+            $table->date('duracion_inicio')->nullable();
+            $table->date('duracion_fin')->nullable();
+            $table->decimal('costo', 8, 2)->nullable();
+            $table->integer('cupos_maximos')->default(20);
+            $table->string('imagen')->nullable();
+            $table->boolean('activo')->default(true);
             $table->timestamps();
+            $table->time('horario_inicio')->nullable();
+            $table->time('horario_fin')->nullable();
+            $table->string('categoria')->nullable();
         });
     }
 
