@@ -1,0 +1,26 @@
+[phases.setup]
+nixPkgs = ["php82", "php82Packages.composer", "nodejs_20"]
+
+[phases.install]
+cmds = [
+  "composer install --no-dev --optimize-autoloader",
+  "npm ci --production=false",
+  "npm run build"
+]
+
+[phases.build]
+cmds = [
+  "php artisan config:cache",
+  "php artisan route:cache",
+  "php artisan view:cache"
+]
+
+# Fase de deploy: migraciones y seeders automáticos
+[phases.deploy]
+cmds = [
+  "php artisan migrate --force",
+  "php artisan db:seed --force"
+]
+
+[start]
+cmd = "php artisan serve --host=0.0.0.0 --port=$PORT"
