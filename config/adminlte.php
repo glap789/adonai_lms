@@ -542,7 +542,7 @@ return [
         JeroenNoten\LaravelAdminLte\Menu\Filters\DataFilter::class,
 
         // ✅ FILTRO PERSONALIZADO PARA ROLES
-        App\Http\MenuFilter::class,
+        // App\Http\MenuFilter::class,
         
     ],
 
