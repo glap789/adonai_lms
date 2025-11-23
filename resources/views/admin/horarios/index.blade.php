@@ -1,8 +1,12 @@
 @extends('adminlte::page')
+
+@section('title', 'Horarios')
+
 @section('content')
     <div class="row">
         <h1 class="m-2">Horarios</h1>
     </div>
+
     <div class="row">
         <div class="col-md-12">
             <div class="card card-outline card-primary">
@@ -14,94 +18,116 @@
                         </a>
                     </div>
                 </div>
+
                 <div class="card-body">
-                    <table id="example1" class="table table-bordered table-striped table-hover table-sm">
-                        <thead>
-                            <tr>
-                                <th>Nro</th>
-                                <th>Gestión</th>
-                                <th>Curso</th>
-                                <th>Grado</th>
-                                <th>Docente</th>
-                                <th>Día</th>
-                                <th>Hora Inicio</th>
-                                <th>Hora Fin</th>
-                                <th>Aula</th>
-                                <th style="text-align: center">Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @php
-                                $contador = 1;
-                            @endphp
-                            @foreach ($horarios as $horario)
+                    <div class="table-responsive">
+                        <table id="example1" class="table table-bordered table-striped table-hover table-sm">
+                            <thead>
                                 <tr>
-                                    <td style="text-align: center">{{ $contador++ }}</td>
-                                    <td>{{ $horario->gestion->nombre }}</td>
-                                    <td>{{ $horario->curso->nombre }}</td>
-                                    <td>{{ $horario->grado->nombre }}</td>
-                                    <td>{{ $horario->docente ? $horario->docente->persona->apellidos . ' ' . $horario->docente->persona->nombres : 'Sin asignar' }}</td>
-                                    <td>{{ $horario->dia_semana }}</td>
-                                    <td>{{ \Carbon\Carbon::parse($horario->hora_inicio)->format('H:i') }}</td>
-                                    <td>{{ \Carbon\Carbon::parse($horario->hora_fin)->format('H:i') }}</td>
-                                    <td>{{ $horario->aula ?? '-' }}</td>
-                                    <td style="text-align: center">
-                                        <div class="btn-group" role="group" aria-label="Basic example">
-                                            <a href="{{ route('admin.horarios.show', $horario->id) }}"
-                                                class="btn btn-info btn-sm"><i class="fa fa-eye"></i></a>
-                                            <button type="button" class="btn btn-success btn-sm" data-toggle="modal"
-                                                data-target="#editHorarioModal{{ $horario->id }}"><i
-                                                    class="fa fa-pencil"></i></button>
-                                            <form action="{{ route('admin.horarios.destroy', $horario->id) }}"
-                                                method="post" onclick="preguntar{{ $horario->id }}(event)"
-                                                id="miFormulario{{ $horario->id }}">
-                                                @csrf
-                                                @method('delete')
-                                                <button type="submit" class="btn btn-danger btn-sm"
-                                                    style="border-radius:0px 5px 5px 0px"><i class="fa fa-trash"></i></button>
-                                            </form>
-                                            <script>
-                                                function preguntar{{ $horario->id }}(event) {
-                                                    event.preventDefault();
-                                                    Swal.fire({
-                                                        title: "¿Seguro que quiere eliminar este registro?",
-                                                        icon: "warning",
-                                                        showCancelButton: true,
-                                                        confirmButtonText: "Si, Eliminar!",
-                                                        cancelButtonText: "Cancelar",
-                                                    }).then((result) => {
-                                                        if (result.isConfirmed) {
-                                                            var form = document.getElementById('miFormulario{{ $horario->id }}');
-                                                            form.submit();
-                                                        }
-                                                    });
-                                                    return false;
-                                                }
-                                            </script>
-                                        </div>
-                                    </td>
+                                    <th>Nro</th>
+                                    <th>Gestión</th>
+                                    <th>Curso</th>
+                                    <th>Grado</th>
+                                    <th>Docente</th>
+                                    <th>Día</th>
+                                    <th>Hora Inicio</th>
+                                    <th>Hora Fin</th>
+                                    <th>Aula</th>
+                                    <th style="text-align: center">Acciones</th>
                                 </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                @php $contador = 1; @endphp
+                                @foreach ($horarios as $horario)
+                                    <tr>
+                                        <td style="text-align: center">{{ $contador++ }}</td>
+                                        <td>{{ $horario->gestion->nombre }}</td>
+                                        <td>{{ $horario->curso->nombre }}</td>
+                                        <td>{{ $horario->grado->nombre }}</td>
+                                        <td>
+                                            {{ $horario->docente
+                                                ? $horario->docente->persona->apellidos . ' ' . $horario->docente->persona->nombres
+                                                : 'Sin asignar' }}
+                                        </td>
+                                        <td>{{ $horario->dia_semana }}</td>
+                                        <td>{{ \Carbon\Carbon::parse($horario->hora_inicio)->format('H:i') }}</td>
+                                        <td>{{ \Carbon\Carbon::parse($horario->hora_fin)->format('H:i') }}</td>
+                                        <td>{{ $horario->aula ?? '-' }}</td>
+
+                                        <td style="text-align: center">
+    <div class="btn-group" role="group">
+
+        <!-- Ver -->
+        <a href="{{ route('admin.horarios.show', $horario->id) }}"
+           class="btn btn-info btn-sm">
+            <i class="fa fa-eye"></i>
+        </a>
+
+        <!-- Editar -->
+        <button type="button"
+                class="btn btn-success btn-sm"
+                data-toggle="modal"
+                data-target="#editHorarioModal{{ $horario->id }}">
+            <i class="fa fa-edit"></i>
+        </button>
+
+        <!-- Eliminar -->
+        <form action="{{ route('admin.horarios.destroy', $horario->id) }}"
+              method="post"
+              onclick="preguntar{{ $horario->id }}(event)"
+              id="miFormulario{{ $horario->id }}">
+            @csrf
+            @method('delete')
+            <button type="submit" class="btn btn-danger btn-sm">
+                <i class="fa fa-trash"></i>
+            </button>
+        </form>
+
+    </div>
+
+    <script>
+        function preguntar{{ $horario->id }}(event) {
+            event.preventDefault();
+            Swal.fire({
+                title: "¿Seguro que quiere eliminar este registro?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Sí, eliminar",
+                cancelButtonText: "Cancelar",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('miFormulario{{ $horario->id }}').submit();
+                }
+            });
+        }
+    </script>
+</td>
+
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div> {{-- table-responsive --}}
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Modal CREATE-->
-    <div class="modal fade" id="createHorarioModal" tabindex="-1" role="dialog" aria-labelledby="createHorarioModalLabel"
-        aria-hidden="true">
+    <div class="modal fade" id="createHorarioModal" tabindex="-1" role="dialog"
+         aria-labelledby="createHorarioModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <form action="{{ route('admin.horarios.store') }}" method="POST">
                     @csrf
+
                     <div class="modal-header">
                         <h5 class="modal-title" id="createHorarioModalLabel">Crear Nuevo Horario</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
+
                     <div class="modal-body">
                         @if ($errors->any())
                             @foreach ($errors->all() as $error)
@@ -110,10 +136,11 @@
                                 </div>
                             @endforeach
                         @endif
+
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="">Gestión <b>*</b></label>
+                                    <label>Gestión <b>*</b></label>
                                     <select name="gestion_id" class="form-control" required>
                                         <option value="">Seleccione una gestión...</option>
                                         @foreach ($gestiones as $gestion)
@@ -128,9 +155,10 @@
                                     @enderror
                                 </div>
                             </div>
+
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="">Curso <b>*</b></label>
+                                    <label>Curso <b>*</b></label>
                                     <select name="curso_id" class="form-control" required>
                                         <option value="">Seleccione un curso...</option>
                                         @foreach ($cursos as $curso)
@@ -145,11 +173,12 @@
                                     @enderror
                                 </div>
                             </div>
-                        </div>
+                        </div> {{-- row --}}
+
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="">Grado <b>*</b></label>
+                                    <label>Grado <b>*</b></label>
                                     <select name="grado_id" class="form-control" required>
                                         <option value="">Seleccione un grado...</option>
                                         @foreach ($grados as $grado)
@@ -164,9 +193,10 @@
                                     @enderror
                                 </div>
                             </div>
+
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="">Docente</label>
+                                    <label>Docente</label>
                                     <select name="docente_id" class="form-control">
                                         <option value="">Sin asignar...</option>
                                         @foreach ($docentes as $docente)
@@ -181,11 +211,12 @@
                                     @enderror
                                 </div>
                             </div>
-                        </div>
+                        </div> {{-- row --}}
+
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label for="">Día <b>*</b></label>
+                                    <label>Día <b>*</b></label>
                                     <select name="dia_semana" class="form-control" required>
                                         <option value="">Seleccione...</option>
                                         <option value="Lunes" {{ old('dia_semana') == 'Lunes' ? 'selected' : '' }}>Lunes</option>
@@ -200,44 +231,49 @@
                                     @enderror
                                 </div>
                             </div>
+
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label for="">Hora Inicio <b>*</b></label>
+                                    <label>Hora Inicio <b>*</b></label>
                                     <input type="time" name="hora_inicio" value="{{ old('hora_inicio') }}"
-                                        class="form-control" required>
+                                           class="form-control" required>
                                     @error('hora_inicio')
                                         <small class="text-danger">{{ $message }}</small>
                                     @enderror
                                 </div>
                             </div>
+
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label for="">Hora Fin <b>*</b></label>
+                                    <label>Hora Fin <b>*</b></label>
                                     <input type="time" name="hora_fin" value="{{ old('hora_fin') }}"
-                                        class="form-control" required>
+                                           class="form-control" required>
                                     @error('hora_fin')
                                         <small class="text-danger">{{ $message }}</small>
                                     @enderror
                                 </div>
                             </div>
-                        </div>
+                        </div> {{-- row --}}
+
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    <label for="">Aula</label>
+                                    <label>Aula</label>
                                     <input type="text" name="aula" value="{{ old('aula') }}"
-                                        class="form-control" maxlength="20" placeholder="Ej: A-101">
+                                           class="form-control" maxlength="20" placeholder="Ej: A-101">
                                     @error('aula')
                                         <small class="text-danger">{{ $message }}</small>
                                     @enderror
                                 </div>
                             </div>
-                        </div>
+                        </div> {{-- row --}}
                     </div>
+
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                         <button type="submit" class="btn btn-primary">Guardar</button>
                     </div>
+
                 </form>
             </div>
         </div>
@@ -246,18 +282,20 @@
     <!-- Modal EDIT-->
     @foreach ($horarios as $horario)
         <div class="modal fade" id="editHorarioModal{{ $horario->id }}" tabindex="-1" role="dialog"
-            aria-labelledby="editHorarioModalLabel{{ $horario->id }}" aria-hidden="true">
+             aria-labelledby="editHorarioModalLabel{{ $horario->id }}" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <form action="{{ route('admin.horarios.update', $horario->id) }}" method="POST">
                         @csrf
                         @method('PUT')
+
                         <div class="modal-header">
                             <h5 class="modal-title" id="editHorarioModalLabel{{ $horario->id }}">Editar Horario</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
+
                         <div class="modal-body">
                             @if (session('modal_id') == $horario->id && $errors->any())
                                 @foreach ($errors->all() as $error)
@@ -266,10 +304,11 @@
                                     </div>
                                 @endforeach
                             @endif
+
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="">Gestión <b>*</b></label>
+                                        <label>Gestión <b>*</b></label>
                                         <select name="gestion_id" class="form-control" required>
                                             <option value="">Seleccione una gestión...</option>
                                             @foreach ($gestiones as $gestion)
@@ -281,9 +320,10 @@
                                         </select>
                                     </div>
                                 </div>
+
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="">Curso <b>*</b></label>
+                                        <label>Curso <b>*</b></label>
                                         <select name="curso_id" class="form-control" required>
                                             <option value="">Seleccione un curso...</option>
                                             @foreach ($cursos as $curso)
@@ -295,11 +335,12 @@
                                         </select>
                                     </div>
                                 </div>
-                            </div>
+                            </div> {{-- row --}}
+
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="">Grado <b>*</b></label>
+                                        <label>Grado <b>*</b></label>
                                         <select name="grado_id" class="form-control" required>
                                             <option value="">Seleccione un grado...</option>
                                             @foreach ($grados as $grado)
@@ -311,9 +352,10 @@
                                         </select>
                                     </div>
                                 </div>
+
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="">Docente</label>
+                                        <label>Docente</label>
                                         <select name="docente_id" class="form-control">
                                             <option value="">Sin asignar...</option>
                                             @foreach ($docentes as $docente)
@@ -325,11 +367,12 @@
                                         </select>
                                     </div>
                                 </div>
-                            </div>
+                            </div> {{-- row --}}
+
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label for="">Día <b>*</b></label>
+                                        <label>Día <b>*</b></label>
                                         <select name="dia_semana" class="form-control" required>
                                             <option value="">Seleccione...</option>
                                             <option value="Lunes" {{ $horario->dia_semana == 'Lunes' ? 'selected' : '' }}>Lunes</option>
@@ -341,39 +384,47 @@
                                         </select>
                                     </div>
                                 </div>
+
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label for="">Hora Inicio <b>*</b></label>
-                                        <input type="time" name="hora_inicio" value="{{ $horario->hora_inicio }}"
-                                            class="form-control" required>
+                                        <label>Hora Inicio <b>*</b></label>
+                                        <input type="time" name="hora_inicio"
+                                               value="{{ \Carbon\Carbon::parse($horario->hora_inicio)->format('H:i') }}"
+                                               class="form-control" required>
                                     </div>
                                 </div>
+
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label for="">Hora Fin <b>*</b></label>
-                                        <input type="time" name="hora_fin" value="{{ $horario->hora_fin }}"
-                                            class="form-control" required>
+                                        <label>Hora Fin <b>*</b></label>
+                                        <input type="time" name="hora_fin"
+                                               value="{{ \Carbon\Carbon::parse($horario->hora_fin)->format('H:i') }}"
+                                               class="form-control" required>
                                     </div>
                                 </div>
-                            </div>
+                            </div> {{-- row --}}
+
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label for="">Aula</label>
+                                        <label>Aula</label>
                                         <input type="text" name="aula" value="{{ $horario->aula }}"
-                                            class="form-control" maxlength="20">
+                                               class="form-control" maxlength="20">
                                     </div>
                                 </div>
-                            </div>
+                            </div> {{-- row --}}
                         </div>
+
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                             <button type="submit" class="btn btn-success">Actualizar</button>
                         </div>
+
                     </form>
                 </div>
             </div>
         </div>
+
         @if (session('modal_id') == $horario->id && $errors->any())
             <script>
                 $(document).ready(function() {
@@ -382,36 +433,37 @@
             </script>
         @endif
     @endforeach
-@endsection
+
+@endsection {{-- AQUÍ CIERRA CONTENT --}}
 
 @section('js')
     <script>
         $(function() {
             $("#example1").DataTable({
-                "pageLength": 10,
-                "responsive": true,
-                "lengthChange": true,
-                "autoWidth": false,
-                "language": {
-                    "emptyTable": "No hay información",
-                    "decimal": "",
-                    "info": "Mostrando _START_ a _END_ de _TOTAL_ Horarios",
-                    "infoEmpty": "Mostrando 0 a 0 de 0 Horarios",
-                    "infoFiltered": "(Filtrado de _MAX_ total Horarios)",
-                    "thousands": ".",
-                    "lengthMenu": "Mostrar _MENU_ Horarios",
-                    "loadingRecords": "Cargando...",
-                    "processing": "Procesando...",
-                    "search": "Buscar:",
-                    "zeroRecords": "Sin resultados encontrados",
-                    "paginate": {
-                        "first": "Primero",
-                        "last": "Ultimo",
-                        "next": "Siguiente",
-                        "previous": "Anterior"
+                pageLength: 10,
+                responsive: true,
+                lengthChange: true,
+                autoWidth: false,
+                language: {
+                    emptyTable: "No hay información",
+                    decimal: "",
+                    info: "Mostrando _START_ a _END_ de _TOTAL_ Horarios",
+                    infoEmpty: "Mostrando 0 a 0 de 0 Horarios",
+                    infoFiltered: "(Filtrado de _MAX_ total Horarios)",
+                    thousands: ".",
+                    lengthMenu: "Mostrar _MENU_ Horarios",
+                    loadingRecords: "Cargando...",
+                    processing: "Procesando...",
+                    search: "Buscar:",
+                    zeroRecords: "Sin resultados encontrados",
+                    paginate: {
+                        first: "Primero",
+                        last: "Último",
+                        next: "Siguiente",
+                        previous: "Anterior"
                     }
                 },
-                "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+                buttons: ["copy", "csv", "excel", "pdf", "print", "colvis"]
             }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
         });
     </script>

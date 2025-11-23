@@ -107,10 +107,9 @@ Route::prefix('blog')->name('blog.')->group(function () {
 
         
     // Niveles
-    Route::get('niveles', [App\Http\Controllers\Admin\Academico\NivelController::class, 'index'])->name('niveles.index');
-    Route::post('niveles/create', [App\Http\Controllers\Admin\Academico\NivelController::class, 'store'])->name('niveles.store');
-    Route::put('niveles/{id}', [App\Http\Controllers\Admin\Academico\NivelController::class, 'update'])->name('niveles.update');
-    Route::delete('niveles/{id}', [App\Http\Controllers\Admin\Academico\NivelController::class, 'destroy'])->name('niveles.destroy');
+    // Niveles — CRUD limpio y sin conflictos
+Route::resource('niveles', App\Http\Controllers\Admin\Academico\NivelController::class)
+    ->parameters(['niveles' => 'nivel']);
 
     // Turnos
     Route::resource('turnos', App\Http\Controllers\Admin\Academico\TurnoController::class);

@@ -254,20 +254,33 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Hora Inicio <b>*</b></label>
-                                    <input type="time" name="hora_inicio" value="{{ $horario->hora_inicio }}" class="form-control" required>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Hora Fin <b>*</b></label>
-                                    <input type="time" name="hora_fin" value="{{ $horario->hora_fin }}" class="form-control" required>
-                                </div>
-                            </div>
-                        </div>
+                       <div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label>Hora Inicio <b>*</b></label>
+            <input 
+                type="time" 
+                name="hora_inicio" 
+                value="{{ \Carbon\Carbon::parse($horario->hora_inicio)->format('H:i') }}" 
+                class="form-control" 
+                required>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="form-group">
+            <label>Hora Fin <b>*</b></label>
+            <input 
+                type="time" 
+                name="hora_fin" 
+                value="{{ \Carbon\Carbon::parse($horario->hora_fin)->format('H:i') }}" 
+                class="form-control" 
+                required>
+        </div>
+    </div>
+</div>
+
+
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
