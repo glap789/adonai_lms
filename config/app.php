@@ -52,7 +52,8 @@ return [
     |
     */
 
-    'url' => env('APP_URL', 'https://adonai.up.railway.app'),
+    'url' => env('APP_URL', 'http://localhost'),
+    
 
     /*
     |--------------------------------------------------------------------------
@@ -64,8 +65,6 @@ return [
     | is set to "UTC" by default as it is suitable for most use cases.
     |
     */
-
-    'asset_url' => env('ASSET_URL', 'https://adonai.up.railway.app'),
 
     'timezone' => 'America/Lima',
 
