@@ -144,59 +144,7 @@
         </div>
     </section>
 
-    <!-- Sección Niveles Educativos -->
-    <section class="levels-section" id="niveles">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-tag">Educación Integral</span>
-                <h2 class="section-title">Nuestros Niveles Educativos</h2>
-            </div>
-
-            <div class="levels-grid">
-                <div class="level-card course-card">
-                    <div class="level-image course-image"></div>
-                    <div class="level-content">
-                        <h3>Inicial</h3>
-                        <p>Desarrollo integral en un ambiente seguro y estimulante con metodología lúdica.</p>
-                        <ul class="level-features">
-                            <li>Estimulación temprana</li>
-                            <li>Desarrollo socioemocional</li>
-                            <li>Inglés desde inicial</li>
-                        </ul>
-                        <button class="btn-learn-more">Más información</button>
-                    </div>
-                </div>
-
-                <div class="level-card course-card">
-                    <div class="level-image course-image"></div>
-                    <div class="level-content">
-                        <h3>Primaria</h3>
-                        <p>Formación académica sólida con énfasis en valores y desarrollo de habilidades.</p>
-                        <ul class="level-features">
-                            <li>Programa bilingüe</li>
-                            <li>Tecnología educativa</li>
-                            <li>Deportes y artes</li>
-                        </ul>
-                        <button class="btn-learn-more">Más información</button>
-                    </div>
-                </div>
-
-                <div class="level-card course-card">
-                    <div class="level-image course-image"></div>
-                    <div class="level-content">
-                        <h3>Secundaria</h3>
-                        <p>Preparación académica de excelencia con enfoque en liderazgo y proyecto de vida.</p>
-                        <ul class="level-features">
-                            <li>Preparación universitaria</li>
-                            <li>Liderazgo cristiano</li>
-                            <li>Orientación vocacional</li>
-                        </ul>
-                        <button class="btn-learn-more">Más información</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+    
 
     <!-- Sección Talleres -->
     <section class="workshops-section" id="talleres">
